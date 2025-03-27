@@ -7,9 +7,9 @@ export default defineConfig({
       // 入口文件路径
       entry: "src/index.ts",
       // 暴露的全局变量名称
-      name: "snowdenRequest",
+      name: "request",
       // 输出文件名称（不包含扩展名）
-      fileName: "snowden-request",
+      fileName: "request",
       // 生成的包格式
       // es: ES Module格式
       // umd: Universal Module Definition格式，同时支持CommonJS、AMD和全局变量引入

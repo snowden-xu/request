@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "A modern HTTP request library for browser and Node.js",
   "type": "module",
-  "main": "dist/snowden-request.umd.js",
-  "module": "dist/snowden-request.js",
+  "main": "dist/request.umd.js",
+  "module": "dist/request.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
   "scripts": {
@@ -20,5 +20,8 @@
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
     "vitest": "^1.2.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
