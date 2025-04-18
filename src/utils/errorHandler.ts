@@ -1,21 +1,38 @@
-import { AxiosError } from "axios";
+import type { AxiosError } from "axios";
+import type { ErrorResponse } from "@/types";
 
-export function handleError(error: AxiosError) {
+export class RequestError extends Error {
+  constructor(
+    public message: string,
+    public code: string | number,
+    public error?: AxiosError,
+  ) {
+    super(message);
+    this.name = "RequestError";
+  }
+}
+
+export function isNetworkError(error: AxiosError): boolean {
+  return (
+    !error.response && Boolean(error.code) && error.code !== "ECONNABORTED"
+  );
+}
+
+export async function handleError(
+  error: AxiosError<ErrorResponse>,
+): Promise<never> {
   if (error.response) {
-    const { status, data } = error.response;
-    switch (status) {
-      case 401:
-        console.warn("未授权");
-        break;
-      case 500:
-        console.error("服务器错误:", data);
-        break;
-      default:
-      // console.warn(data?.message || "未知错误");
-    }
+    // 请求已发出，但服务器响应的状态码不在 2xx 范围内
+    throw new RequestError(
+      error.response.data?.message || "请求失败",
+      error.response.status,
+      error,
+    );
   } else if (error.request) {
-    console.warn("网络异常或超时");
+    // 请求已发出，但没有收到响应
+    throw new RequestError("网络错误，请检查网络连接", "NETWORK_ERROR", error);
   } else {
-    console.error("请求配置异常", error.message);
+    // 请求配置发生错误
+    throw new RequestError("请求配置错误", "REQUEST_ERROR", error);
   }
 }

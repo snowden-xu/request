@@ -1,6 +1,3 @@
-import { Request, createRequest } from "./core";
-
-const request = new Request();
+import request from "./core";
 
 export default request;
-export { Request, createRequest };

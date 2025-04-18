@@ -1,18 +1,35 @@
-import type { AxiosInstance } from "axios";
+import type {
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
 import { handleError } from "@/utils/errorHandler";
+import type { InterceptorOptions } from "@/types";
 
-export function setInterceptors(instance: AxiosInstance) {
-  instance.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
-  });
+export function setInterceptors(
+  instance: AxiosInstance,
+  interceptors?: InterceptorOptions,
+) {
+  // 请求拦截器
+  instance.interceptors.request.use(
+    interceptors?.requestInterceptor ||
+      ((config: InternalAxiosRequestConfig) => config),
+    interceptors?.requestInterceptorCatch,
+  );
 
+  // 响应拦截器
   instance.interceptors.response.use(
-    (res) => res.data,
+    async <T>(res: AxiosResponse<T>) => {
+      if (interceptors?.responseInterceptor) {
+        return interceptors.responseInterceptor(res);
+      }
+      return res;
+    },
     (err) => {
-      handleError(err);
-      return Promise.reject(err);
-    }
+      if (interceptors?.responseInterceptorCatch) {
+        return interceptors.responseInterceptorCatch(err);
+      }
+      return handleError(err);
+    },
   );
 }

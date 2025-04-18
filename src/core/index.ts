@@ -1,13 +1,21 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
-import { defaultConfig } from "./config";
-import { setInterceptors } from "./interceptors";
+import axios, {
+  mergeConfig,
+  type AxiosInstance,
+  type AxiosRequestConfig,
+} from "axios";
 
-export class Request {
-  private instance: AxiosInstance;
+import extend from "../utils/extend";
+import defaultConfig from "./config";
+import { RequestConfig, RequestInstance } from "@/types";
+import { setInterceptors } from "@/core/interceptors";
 
-  constructor(config: AxiosRequestConfig = {}) {
-    this.instance = axios.create({ ...defaultConfig, ...config });
-    setInterceptors(this.instance);
+class Request {
+  private readonly instance: AxiosInstance;
+
+  constructor(config: RequestConfig = {}) {
+    const { interceptors, ...axiosConfig } = config;
+    this.instance = axios.create(axiosConfig);
+    setInterceptors(this.instance, interceptors);
   }
 
   request<T = any>(config: AxiosRequestConfig) {
@@ -35,6 +43,23 @@ export class Request {
   }
 }
 
-export function createRequest(config: AxiosRequestConfig = {}) {
-  return new Request(config);
+function createInstance(defaultConfig: RequestConfig): RequestInstance {
+  const context = new Request(defaultConfig);
+  const instance = Request.prototype.request.bind(context) as RequestInstance;
+
+  extend(instance, Request.prototype, context, { allOwnKeys: true });
+
+  extend(instance, context, null, { allOwnKeys: true });
+
+  instance.create = function create(
+    instanceConfig?: RequestConfig,
+  ): RequestInstance {
+    return createInstance(mergeConfig(defaultConfig, instanceConfig || {}));
+  };
+
+  return instance;
 }
+
+const request = createInstance(defaultConfig);
+
+export default request;
