@@ -17,19 +17,19 @@ export interface InterceptorOptions {
   /**
    * 请求拦截器
    */
-  requestInterceptor: (config: InternalAxiosRequestConfig) => InternalAxiosRequestConfig;
+  requestInterceptor?: (config: InternalAxiosRequestConfig) => InternalAxiosRequestConfig;
   /**
    * 请求错误拦截器
    */
-  requestInterceptorCatch: (error: any) => any;
+  requestInterceptorCatch?: (error: any) => any;
   /**
    * 响应拦截器
    */
-  responseInterceptor: (response: AxiosResponse) => any;
+  responseInterceptor?: (response: AxiosResponse) => any;
   /**
    * 响应错误拦截器
    */
-  responseInterceptorCatch: (error: AxiosError) => any;
+  responseInterceptorCatch?: (error: AxiosError) => any;
 }
 
 // 定义响应类型条件类型
