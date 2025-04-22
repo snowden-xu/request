@@ -5,7 +5,7 @@ export class RequestError extends Error {
   constructor(
     public message: string,
     public code: string | number,
-    public error?: AxiosError,
+    public error?: AxiosError
   ) {
     super(message);
     this.name = "RequestError";
@@ -19,14 +19,14 @@ export function isNetworkError(error: AxiosError): boolean {
 }
 
 export async function handleError(
-  error: AxiosError<ErrorResponse>,
+  error: AxiosError<ErrorResponse>
 ): Promise<never> {
   if (error.response) {
     // 请求已发出，但服务器响应的状态码不在 2xx 范围内
     throw new RequestError(
       error.response.data?.message || "请求失败",
       error.response.status,
-      error,
+      error
     );
   } else if (error.request) {
     // 请求已发出，但没有收到响应

@@ -1,8 +1,4 @@
-import axios, {
-  mergeConfig,
-  type AxiosInstance,
-  type AxiosRequestConfig,
-} from "axios";
+import axios, { mergeConfig, type AxiosInstance } from "axios";
 
 import extend from "../utils/extend";
 import defaultConfig from "./config";
@@ -18,27 +14,27 @@ class Request {
     setInterceptors(this.instance, interceptors);
   }
 
-  request<T = any>(config: AxiosRequestConfig) {
+  request<T = any>(config: RequestConfig) {
     return this.instance.request<T>(config);
   }
 
-  get<T = any>(url: string, config?: AxiosRequestConfig) {
+  get<T = any>(url: string, config?: RequestConfig) {
     return this.request<T>({ method: "get", url, ...config });
   }
 
-  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+  post<T = any>(url: string, data?: any, config?: RequestConfig) {
     return this.request<T>({ method: "post", url, data, ...config });
   }
 
-  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+  put<T = any>(url: string, data?: any, config?: RequestConfig) {
     return this.request<T>({ method: "put", url, data, ...config });
   }
 
-  delete<T = any>(url: string, config?: AxiosRequestConfig) {
+  delete<T = any>(url: string, config?: RequestConfig) {
     return this.request<T>({ method: "delete", url, ...config });
   }
 
-  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
+  patch<T = any>(url: string, data?: any, config?: RequestConfig) {
     return this.request<T>({ method: "patch", url, data, ...config });
   }
 }
@@ -51,9 +47,7 @@ function createInstance(defaultConfig: RequestConfig): RequestInstance {
 
   extend(instance, context, null, { allOwnKeys: true });
 
-  instance.create = function create(
-    instanceConfig?: RequestConfig
-  ): RequestInstance {
+  instance.create = function create(instanceConfig?: RequestConfig): RequestInstance {
     return createInstance(mergeConfig(defaultConfig, instanceConfig || {}));
   };
 

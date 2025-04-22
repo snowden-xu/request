@@ -1,10 +1,4 @@
-import type {
-  AxiosInstance,
-  AxiosRequestConfig,
-  InternalAxiosRequestConfig,
-  Axios,
-  AxiosResponse,
-} from "axios";
+import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig, AxiosResponse } from "axios";
 
 // 错误响应结构
 export interface ErrorResponse {
@@ -22,9 +16,7 @@ export interface InterceptorOptions {
   /**
    * 请求拦截器
    */
-  requestInterceptor?: (
-    config: InternalAxiosRequestConfig
-  ) => InternalAxiosRequestConfig;
+  requestInterceptor?: (config: InternalAxiosRequestConfig) => InternalAxiosRequestConfig;
   /**
    * 请求错误拦截器
    */
@@ -39,31 +31,34 @@ export interface InterceptorOptions {
   responseInterceptorCatch?: (error: any) => any;
 }
 
+// 定义响应类型条件类型
+type RequestConfigWithResponse = RequestConfig & { getResponse: true };
+
+type RequestConfigWithoutResponse = RequestConfig & { getResponse: false };
+
+type RequestMethodOverloads = {
+  <T = any>(url: string, config?: RequestConfigWithoutResponse): Promise<T>;
+  <T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfigWithResponse): Promise<R>;
+  <T = any>(url: string, config?: RequestConfig): Promise<T>;
+};
+
+type RequestMethodOverloadsWithData = {
+  <T = any, D = any>(url: string, data?: D, config?: RequestConfigWithoutResponse): Promise<RequestConfigWithoutResponse>;
+  <T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: RequestConfigWithResponse): Promise<R>;
+  <T = any, D = any>(url: string, data?: D, config?: RequestConfig): Promise<T>;
+};
+
 // 扩展 Axios 实例类型
 export interface RequestInstance extends Omit<AxiosInstance, "request"> {
-  <T = any>(config: AxiosRequestConfig): Promise<T>;
-  get<T = any, R = AxiosResponse<T>, D = any>(
-    url: string,
-    config?: AxiosRequestConfig<D>
-  ): Promise<T>;
-  delete<T = any, R = AxiosResponse<T>, D = any>(
-    url: string,
-    config?: AxiosRequestConfig<D>
-  ): Promise<T>;
-  post<T = any, R = AxiosResponse<T>, D = any>(
-    url: string,
-    data?: D,
-    config?: AxiosRequestConfig<D>
-  ): Promise<T>;
-  put<T = any, R = AxiosResponse<T>, D = any>(
-    url: string,
-    data?: D,
-    config?: AxiosRequestConfig<D>
-  ): Promise<T>;
-  patch<T = any, R = AxiosResponse<T>, D = any>(
-    url: string,
-    data?: D,
-    config?: AxiosRequestConfig<D>
-  ): Promise<T>;
+  <T = any>(config: RequestConfigWithoutResponse): Promise<T>;
+  <T = any, R = AxiosResponse<T>>(config: RequestConfigWithResponse): Promise<R>;
+  <T = any>(config?: RequestConfig): Promise<T>;
+
+  get: RequestMethodOverloads;
+  delete: RequestMethodOverloads;
+  post: RequestMethodOverloadsWithData;
+  put: RequestMethodOverloadsWithData;
+  patch: RequestMethodOverloadsWithData;
+
   create(config?: RequestConfig): RequestInstance;
 }
