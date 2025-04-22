@@ -52,7 +52,7 @@ function createInstance(defaultConfig: RequestConfig): RequestInstance {
   extend(instance, context, null, { allOwnKeys: true });
 
   instance.create = function create(
-    instanceConfig?: RequestConfig,
+    instanceConfig?: RequestConfig
   ): RequestInstance {
     return createInstance(mergeConfig(defaultConfig, instanceConfig || {}));
   };

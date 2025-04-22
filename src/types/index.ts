@@ -1,26 +1,20 @@
 import type {
   AxiosInstance,
   AxiosRequestConfig,
-  AxiosResponse,
   InternalAxiosRequestConfig,
+  Axios,
+  AxiosResponse,
 } from "axios";
-
-// 定义通用响应结构
-// export interface ResponseData<T = any> {
-//   errors: number;
-//   data: T;
-//   success: boolean;
-// }
-
-// request 配置接口
-export interface RequestConfig extends AxiosRequestConfig {
-  interceptors?: InterceptorOptions;
-}
 
 // 错误响应结构
 export interface ErrorResponse {
   message?: string;
   [key: string]: any;
+}
+
+// request 配置接口
+export interface RequestConfig extends AxiosRequestConfig {
+  interceptors?: InterceptorOptions;
 }
 
 // 拦截器配置接口
@@ -29,7 +23,7 @@ export interface InterceptorOptions {
    * 请求拦截器
    */
   requestInterceptor?: (
-    config: InternalAxiosRequestConfig,
+    config: InternalAxiosRequestConfig
   ) => InternalAxiosRequestConfig;
   /**
    * 请求错误拦截器
@@ -48,6 +42,28 @@ export interface InterceptorOptions {
 // 扩展 Axios 实例类型
 export interface RequestInstance extends Omit<AxiosInstance, "request"> {
   <T = any>(config: AxiosRequestConfig): Promise<T>;
-  <T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
+  get<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    config?: AxiosRequestConfig<D>
+  ): Promise<T>;
+  delete<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    config?: AxiosRequestConfig<D>
+  ): Promise<T>;
+  post<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: AxiosRequestConfig<D>
+  ): Promise<T>;
+  put<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: AxiosRequestConfig<D>
+  ): Promise<T>;
+  patch<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: AxiosRequestConfig<D>
+  ): Promise<T>;
   create(config?: RequestConfig): RequestInstance;
 }
