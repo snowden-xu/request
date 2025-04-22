@@ -1,4 +1,11 @@
-import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
+// 扩展 axios 的 InternalAxiosRequestConfig 接口
+declare module "axios" {
+  interface InternalAxiosRequestConfig {
+    getResponse?: boolean;
+  }
+}
 
 // 错误响应结构
 export interface ErrorResponse {
@@ -24,11 +31,11 @@ export interface InterceptorOptions {
   /**
    * 响应拦截器
    */
-  responseInterceptor?: (response: any) => any;
+  responseInterceptor?: (response: AxiosResponse) => any;
   /**
    * 响应错误拦截器
    */
-  responseInterceptorCatch?: (error: any) => any;
+  responseInterceptorCatch?: (error: AxiosError) => any;
 }
 
 // 定义响应类型条件类型

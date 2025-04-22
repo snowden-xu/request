@@ -15,7 +15,7 @@ const defaultConfig: RequestConfig = {
       return Promise.reject(error);
     },
     // 响应拦截器
-    responseInterceptor: (response: any) => {
+    responseInterceptor: (response) => {
       const {
         config: { getResponse = false },
       } = response;
